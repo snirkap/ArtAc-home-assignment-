@@ -5,26 +5,28 @@ A complete CI/CD pipeline setup for a Java Spring Boot application with Docker c
 ## Architecture
 
 ```
-┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
-│   GitHub Repo   │────►│  GitHub Actions │────►│   Docker Hub    │
-│                 │     │   (CI/CD)       │     │  (Public Repo)  │
-└─────────────────┘     └────────┬────────┘     └────────┬────────┘
-                                 │ OIDC                   │
-                                 ▼                        │
-                        ┌─────────────────┐              │
-                        │   AWS IAM Role  │              │
-                        │  (Assume Role)  │              │
-                        └────────┬────────┘              │
-                                 │ SSM                    │
-                                 ▼                        ▼
-                        ┌─────────────────────────────────────────┐
-                        │              AWS EC2                     │
-                        │  ┌─────────────────────────────────┐    │
-                        │  │     Docker Container            │    │
-                        │  │     (Spring Boot App)           │    │
-                        │  │         :8080                   │    │
-                        │  └─────────────────────────────────┘    │
-                        └─────────────────────────────────────────┘
++----------------+     +------------------+     +------------------+
+|  GitHub Repo   |---->|  GitHub Actions  |---->|   Docker Hub     |
+|                |     |     (CI/CD)      |     |  (Public Repo)   |
++----------------+     +--------+---------+     +--------+---------+
+                                |                        |
+                                | OIDC                   |
+                                v                        |
+                       +------------------+              |
+                       |  AWS IAM Role    |              |
+                       |  (Assume Role)   |              |
+                       +--------+---------+              |
+                                |                        |
+                                | SSM                    | Pull Image
+                                v                        v
+                       +------------------------------------+
+                       |            AWS EC2                 |
+                       |  +------------------------------+  |
+                       |  |     Docker Container         |  |
+                       |  |     (Spring Boot App)        |  |
+                       |  |          :8080               |  |
+                       |  +------------------------------+  |
+                       +------------------------------------+
 ```
 
 ## Project Structure
@@ -302,7 +304,3 @@ docker logs demo-app
 - [ ] Push code to GitHub
 - [ ] Run the workflow manually from Actions tab
 - [ ] Access app at `http://<EC2_IP>:8080`
-
-## License
-
-This project is for demonstration purposes as part of a DevOps assignment.
