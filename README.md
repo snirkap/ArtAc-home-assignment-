@@ -160,8 +160,10 @@ Terraform creates the following resources:
 | Module | Resources |
 |--------|-----------|
 | `iam` | IAM role + instance profile for EC2 SSM access |
-| `ec2` | EC2 instance, security group, Elastic IP |
-| `github-oidc` | IAM role for GitHub Actions OIDC authentication |
+| `ec2` | EC2 instance (Ubuntu or Amazon Linux), security group, Elastic IP |
+| `github-oidc` | IAM role for GitHub Actions OIDC authentication (uses existing OIDC provider) |
+
+**Note:** The user_data script auto-detects the OS and installs Docker accordingly (apt for Ubuntu, dnf for Amazon Linux).
 
 ### Initial Setup
 
@@ -288,9 +290,19 @@ docker logs demo-app
 ## Quick Start Checklist
 
 - [ ] Create Docker Hub account and **public** repository
-- [ ] Create GitHub repository
+- [ ] Create S3 bucket for Terraform remote state
+- [ ] Configure AWS CLI credentials locally
 - [ ] Run `terraform apply` in `/terraform`
-- [ ] Add GitHub secrets from Terraform outputs
+- [ ] Add GitHub secrets from Terraform outputs:
+  - `AWS_ROLE_ARN`
+  - `EC2_INSTANCE_ID`
+  - `EC2_PUBLIC_IP`
+  - `DOCKERHUB_USERNAME`
+  - `DOCKERHUB_TOKEN`
 - [ ] Push code to GitHub
 - [ ] Run the workflow manually from Actions tab
 - [ ] Access app at `http://<EC2_IP>:8080`
+
+## License
+
+This project is for demonstration purposes as part of a DevOps assignment.

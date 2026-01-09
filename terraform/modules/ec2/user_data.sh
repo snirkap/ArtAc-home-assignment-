@@ -5,21 +5,45 @@ set -e
 exec > >(tee /var/log/user-data.log) 2>&1
 echo "Starting user data script at $(date)"
 
-# Update system packages
-echo "Updating system packages..."
-dnf update -y
+# Detect OS and install Docker accordingly
+if command -v apt-get &> /dev/null; then
+    echo "Detected Ubuntu/Debian - using apt"
 
-# Install Docker
-echo "Installing Docker..."
-dnf install -y docker
+    # Update packages
+    apt-get update -y
 
-# Start and enable Docker service
-echo "Starting Docker service..."
-systemctl start docker
-systemctl enable docker
+    # Install Docker
+    apt-get install -y docker.io
 
-# Add ec2-user to docker group
-usermod -aG docker ec2-user
+    # Start Docker
+    systemctl start docker
+    systemctl enable docker
+
+    # Add ubuntu user to docker group
+    usermod -aG docker ubuntu
+
+elif command -v dnf &> /dev/null; then
+    echo "Detected Amazon Linux/RHEL - using dnf"
+
+    # Update packages
+    dnf update -y
+
+    # Install Docker
+    dnf install -y docker
+
+    # Start Docker
+    systemctl start docker
+    systemctl enable docker
+
+    # Add ec2-user to docker group
+    usermod -aG docker ec2-user
+else
+    echo "ERROR: Unsupported OS"
+    exit 1
+fi
+
+echo "Docker installed successfully"
+docker --version
 
 # Pull the application image (public repo - no login needed)
 echo "Pulling Docker image: ${docker_image}..."
