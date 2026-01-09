@@ -1,0 +1,10 @@
+# Application Configuration
+app_name    = "demo-app"
+environment = "dev"
+aws_region  = "us-east-1"
+
+# Docker Configuration (public image - no credentials needed)
+docker_image = "your-dockerhub-username/demo-app:latest"
+
+# GitHub Repository (for OIDC trust policy)
+github_repo = "your-github-username/your-repo-name"

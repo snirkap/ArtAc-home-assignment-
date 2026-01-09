@@ -1,0 +1,25 @@
+# Git
+.git
+.gitignore
+
+# Build outputs
+build/
+.gradle/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Documentation
+*.md
+
+# Terraform
+terraform/
+
+# CI/CD
+.github/
+
+# Docker
+Dockerfile
+.dockerignore
